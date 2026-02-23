@@ -311,7 +311,7 @@ const Navbar = () => {
                           </svg>
                           {link.name}
                           <span className="ml-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-gradient-to-r from-[#ff5e01] to-[#2563eb] text-white">
-                            Premium
+                            Exclusive
                           </span>
                         </span>
                       ) : (
@@ -433,7 +433,7 @@ function DesktopNavItem({ link, currentPath }) {
           </span>
 
           <span className="hidden xl:inline-flex text-[11px] font-semibold px-2 py-0.5 rounded-full bg-gradient-to-r from-[#ff5e01] to-[#2563eb] text-white">
-            Premium
+            Exclusive
           </span>
         </span>
       </Link>
