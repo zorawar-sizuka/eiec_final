@@ -36,7 +36,7 @@ export default function EventsSection() {
     fetchEvents();
   }, []);
 
-  const fetchEvents = async () => {
+  const fetchEvents = async (retries = 3) => {
     setLoading(true);
     setError(null);
     try {
@@ -45,10 +45,17 @@ export default function EventsSection() {
       const json = await res.json();
       setEvents(Array.isArray(json) ? json : []);
     } catch (err) {
+      if (retries > 0) {
+        console.warn(`Events fetch failed, retrying... (${retries} left)`);
+        setTimeout(() => fetchEvents(retries - 1), 2000); // Wait 2s before retry (Neon cold start)
+        return;
+      }
       console.error("Events fetch error:", err);
-      setError(err.message || "Failed to load events");
+      setError(err.message || "Failed to load events. Database might be waking up.");
     } finally {
-      setLoading(false);
+      if (retries === 0 || !error) { // Only set loading false if we're done retrying or succeeded
+        setLoading(false);
+      }
     }
   };
 

@@ -7,25 +7,25 @@ const nextConfig = {
         hostname: 'images.unsplash.com',
         port: '',
         pathname: '/**',
-      }, 
+      },
       {
         protocol: 'https',
         hostname: 'i.pravatar.cc',
         port: '',
         pathname: '/**',
-      }, 
+      },
       {
         protocol: 'https',
         hostname: 'upload.wikimedia.org', // Allow Wikipedia images
         port: '',
         pathname: '/**',
-      }, 
+      },
       {
         protocol: 'https',
         hostname: 'www.pexels.com', // Allow Wikipedia images
         port: '',
         pathname: '/**',
-      }, 
+      },
       {
         protocol: 'https',
         hostname: 'avcylblic93rwzti.public.blob.vercel-storage.com', // Your exact Vercel Blob domain
@@ -36,10 +36,15 @@ const nextConfig = {
         hostname: '*.vercel-storage.com', // Catch-all for future projects
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: '*.supabase.co', // Allow Supabase storage for blogs and materials
+        pathname: '/**',
+      },
     ],
-  }, 
+  },
 
-  
+
 };
 
 export default nextConfig;

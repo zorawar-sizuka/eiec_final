@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 
 async function testHash() {
-  const plainPassword = 'eiec_@safe123'; // Exact pw you use in login
+  const plainPassword = ''; // Exact pw you use in login
   const testHash = '$2b$10$9hTA/dG4/1mkrShA3TeMyeEO0Dn6IxoHeBfqltA6mnBjfxaRoUZSy'; // Paste your DB hash from Studio
 
   // Re-generate hash for verification

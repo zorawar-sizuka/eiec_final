@@ -6,6 +6,8 @@ import { useSession, signOut } from "next-auth/react";
 import Lottie from "lottie-react";
 import LeadsSection from "@/components/Dashboard-Comp/LeadSection";
 import EventsSection from "@/components/Dashboard-Comp/EventsSection";
+import BlogsSection from "@/components/Dashboard-Comp/BlogsSection";
+import StudyMaterialsSection from "@/components/Dashboard-Comp/StudyMaterialsSection";
 
 export default function AdminPage() { 
 
@@ -79,6 +81,26 @@ export default function AdminPage() {
               >
                 Events CMS
               </button> 
+              <button
+                onClick={() => setActiveTab("blogs")}
+                className={`px-6 py-2 rounded-lg text-sm font-bold transition ${
+                  activeTab === "blogs"
+                    ? "bg-slate-900 text-white shadow"
+                    : "text-slate-500 hover:text-slate-700 hover:bg-slate-100"
+                }`}
+              >
+                Blogs
+              </button>
+              <button
+                onClick={() => setActiveTab("materials")}
+                className={`px-6 py-2 rounded-lg text-sm font-bold transition ${
+                  activeTab === "materials"
+                    ? "bg-slate-900 text-white shadow"
+                    : "text-slate-500 hover:text-slate-700 hover:bg-slate-100"
+                }`}
+              >
+                Study Materials
+              </button>
           
 <button
   onClick={() => signOut({ callbackUrl: "/" })}
@@ -94,6 +116,12 @@ export default function AdminPage() {
 
           {/* === TAB 2: EVENTS CMS === */}
           {activeTab === "events" && <EventsSection />}
+
+          {/* === TAB 3: BLOGS === */}
+          {activeTab === "blogs" && <BlogsSection />}
+
+          {/* === TAB 4: STUDY MATERIALS === */}
+          {activeTab === "materials" && <StudyMaterialsSection />}
         </div>
       </div>
     </div>

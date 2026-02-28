@@ -1,22 +1,63 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, ArrowRight, X, ArrowUpRight, Calendar, Clock, ArrowRightCircle } from 'lucide-react';
-import { resourcesData } from '@/app/data/resourceData'; 
+import * as LucideIcons from "lucide-react";
 import StudyLinksSection from '@/components/StudyLink';
 import Link from 'next/link';
+
+// Fallback Hero Data
+const heroData = {
+    title: "Everything you need for your journey",
+    subtitle: "Free downloadable guides, checklists, and expert articles to help you navigate your study abroad application with confidence.",
+    image: "/resources/resource_hero.avif" 
+};
+
 const getTagColor = (tag) => {
     const t = tag.toLowerCase();
-    if (t.includes('anxiety') || t.includes('exam')) return 'bg-[#FEF3C7] text-[#92400E]'; // Yellow
+    if (t.includes('exam') || t.includes('ielts') || t.includes('pte')) return 'bg-[#FEF3C7] text-[#92400E]'; // Yellow
+    if (t.includes('english') || t.includes('language')) return 'bg-[#DBEAFE] text-[#1E40AF]'; // Blue
     if (t.includes('healing') || t.includes('budget')) return 'bg-[#D1FAE5] text-[#065F46]'; // Green
-    if (t.includes('mental') || t.includes('english')) return 'bg-[#DBEAFE] text-[#1E40AF]'; // Blue
     return 'bg-slate-100 text-slate-600'; // Default Gray
-  };
+};
+
+// Map theme strings to Tailwind classes based on your original design
+const themeMap = {
+  blue: { bgColor: "bg-[#EFF6FF]", iconBg: "bg-[#3B82F6]", iconColor: "text-white", textColor: "text-[#1E3A8A]" },
+  green: { bgColor: "bg-[#ECFDF5]", iconBg: "bg-[#10B981]", iconColor: "text-white", textColor: "text-[#064E3B]" },
+  sky: { bgColor: "bg-[#E0F2FE]", iconBg: "bg-[#0EA5E9]", iconColor: "text-white", textColor: "text-[#0C4A6E]" },
+  purple: { bgColor: "bg-[#F3E8FF]", iconBg: "bg-[#A855F7]", iconColor: "text-white", textColor: "text-[#581C87]" },
+  orange: { bgColor: "bg-[#FFEDD5]", iconBg: "bg-[#F97316]", iconColor: "text-white", textColor: "text-[#7C2D12]" },
+  red: { bgColor: "bg-[#FEE2E2]", iconBg: "bg-[#EF4444]", iconColor: "text-white", textColor: "text-[#7F1D1D]" },
+  slate: { bgColor: "bg-[#F1F5F9]", iconBg: "bg-[#64748B]", iconColor: "text-white", textColor: "text-[#0F172A]" },
+};
 
 export default function ResourcesPage() {
   const [selectedBlog, setSelectedBlog] = useState(null);
+  const [materials, setMaterials] = useState([]);
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [materialsRes, blogsRes] = await Promise.all([
+          fetch("/api/resources/materials"),
+          fetch("/api/resources/blogs")
+        ]);
+
+        if (materialsRes.ok) setMaterials(await materialsRes.json());
+        if (blogsRes.ok) setBlogs(await blogsRes.json());
+      } catch (err) {
+        console.error("Failed to fetch resources data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <div className="min-h-screen bg-white">
@@ -24,7 +65,7 @@ export default function ResourcesPage() {
       {/* 1. HERO SECTION */}
       <section className="relative h-[50vh] flex items-center justify-center">
         <Image 
-          src={resourcesData.hero.image} 
+          src={heroData.image} 
           alt="Resources Hero" 
           fill 
           className="object-cover brightness-[0.6]"  
@@ -40,7 +81,7 @@ export default function ResourcesPage() {
             Student Resources
           </motion.h1>
           <p className="text-lg text-slate-200 max-w-2xl mx-auto font-light">
-            {resourcesData.hero.subtitle}
+            {heroData.subtitle}
           </p>
         </div>
       </section>
@@ -53,72 +94,72 @@ export default function ResourcesPage() {
         </div>
 
         <div className="divide-y divide-slate-200 rounded-[2rem] border border-slate-200 overflow-hidden bg-white">
-          {resourcesData.guides.map((guide, i) => {
-            const Icon = guide.icon;
+          {loading ? (
+             <div className="p-12 text-center text-slate-500">Loading guides...</div>
+          ) : materials.filter(m => m.isPublished).length === 0 ? (
+             <div className="p-12 text-center text-slate-500">No guides available right now.</div>
+          ) : (
+             materials.filter(m => m.isPublished).map((guide, i) => {
+              const Icon = LucideIcons[guide.iconName] || LucideIcons.FileText;
+              const theme = themeMap[guide.themeName] || themeMap.blue;
 
-            return (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 14 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="px-6 md:px-10 py-8"
-              >
-                <div className="flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10">
-                  {/* LEFT: Small meta (like date column vibe, but using index to avoid changing data) */}
-                  <div className="w-full lg:w-[90px] flex lg:flex-col items-baseline lg:items-start gap-3 lg:gap-1">
-                    <span className="text-xs uppercase tracking-widest text-slate-400 font-bold">
-                      Guide
-                    </span>
-                    <span className="text-3xl md:text-4xl font-serif text-slate-900 leading-none">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                  </div>
+              return (
+                <motion.div
+                  key={guide.id}
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  className="px-6 md:px-10 py-8"
+                >
+                  <div className="flex flex-col lg:flex-row lg:items-center gap-6 lg:gap-10">
+                    <div className="w-full lg:w-[90px] flex lg:flex-col items-baseline lg:items-start gap-3 lg:gap-1">
+                      <span className="text-xs uppercase tracking-widest text-slate-400 font-bold">
+                        Guide
+                      </span>
+                      <span className="text-3xl md:text-4xl font-serif text-slate-900 leading-none">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                    </div>
 
-                  {/* CENTER: Title + description + “by” line */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start gap-4">
-                      {/* Small icon bubble (keeps your original icon styling) */}
-                      <div className={`shrink-0 w-12 h-12 rounded-full ${guide.iconBg} flex items-center justify-center`}>
-                        <Icon className={`w-6 h-6 ${guide.iconColor}`} />
-                      </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start gap-4">
+                        <div className={`shrink-0 w-12 h-12 rounded-full ${theme.iconBg} flex items-center justify-center`}>
+                          <Icon className={`w-6 h-6 ${theme.iconColor}`} />
+                        </div>
 
-                      <div className="min-w-0">
-                        <h3 className="text-2xl md:text-3xl font-serif text-slate-900 leading-tight">
-                          {guide.title}
-                        </h3>
+                        <div className="min-w-0">
+                          <h3 className="text-2xl md:text-3xl font-serif text-slate-900 leading-tight">
+                            {guide.title}
+                          </h3>
 
-                        {/* If you already have author fields in your data later, drop them in here.
-                            For now, we’re keeping it “content from current code” = title + desc. */}
-                        <p className="mt-3 text-slate-500 leading-relaxed text-sm md:text-base">
-                          {guide.desc}
-                        </p>
+                          <p className="mt-3 text-slate-500 leading-relaxed text-sm md:text-base">
+                            {guide.description}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
 
                   {/* RIGHT: “Image” replacement (lucide logo panel) + Download tab */}
-                  <div className="w-full lg:w-auto flex flex-col sm:flex-row lg:flex-row items-stretch gap-4 lg:gap-5">
-                    {/* Lucide “image” panel */}
-                    <div className="flex-1 sm:flex-none sm:w-[220px] h-[110px] rounded-3xl bg-slate-50 border border-slate-200 flex items-center justify-center">
-                      <Icon className="w-12 h-12 text-slate-700" />
-                    </div>
+                    <div className="w-full lg:w-auto flex flex-col sm:flex-row lg:flex-row items-stretch gap-4 lg:gap-5">
+                      <div className="flex-1 sm:flex-none sm:w-[220px] h-[110px] rounded-3xl bg-slate-50 border border-slate-200 flex items-center justify-center">
+                        <Icon className="w-12 h-12 text-slate-700" />
+                      </div>
 
-                    {/* Download tab (arrow area in the inspiration) */}
-                    <a
-                      href={guide.downloadUrl}
-                      download
-                      className="group sm:w-[170px] lg:w-[170px] h-[56px] sm:h-[110px] rounded-3xl bg-slate-900 text-white flex items-center justify-center gap-3 font-bold shadow-sm hover:bg-slate-800 transition-colors"
-                    >
-                      <span className="text-sm">Download</span>
-                      <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </a>
+                      <a
+                        href={guide.fileUrl}
+                        download
+                        className="group sm:w-[170px] lg:w-[170px] h-[56px] sm:h-[110px] rounded-3xl bg-slate-900 text-white flex items-center justify-center gap-3 font-bold shadow-sm hover:bg-slate-800 transition-colors"
+                      >
+                        <span className="text-sm">Download</span>
+                        <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                      </a>
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            );
-          })}
+                </motion.div>
+              );
+            })
+          )}
         </div>
       </section> 
 
@@ -135,25 +176,30 @@ export default function ResourcesPage() {
           <h2 className="text-3xl font-serif text-slate-900 mb-12">Latest Insights</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
-            {resourcesData.blogs.map((blog, i) => (
+            {loading ? (
+               <div className="col-span-full py-12 text-center text-slate-500">Loading insights...</div>
+            ) : blogs.filter(b => b.isPublished).length === 0 ? (
+               <div className="col-span-full py-12 text-center text-slate-500">No articles available right now.</div>
+            ) : blogs.filter(b => b.isPublished).map((blog) => (
               <motion.div 
                 key={blog.id}
                 layoutId={`blog-card-${blog.id}`}
                 onClick={() => setSelectedBlog(blog)}
-                className="group cursor-pointer block"
+                className="group cursor-pointer flex flex-col w-full"
               > 
-              <Link
-  href={`/resources/${blog.id}`}
-  onClick={(e) => e.stopPropagation()}
-  className="inline-flex items-center gap-2 mt-4 text-sm font-bold text-slate-700 hover:text-blue-700"
->
-  Read full article <ArrowRight className="w-4 h-4" />
-</Link>
+                {/* 1. Top Link (Stops propagation to not open modal) */}
+                <Link
+                  href={`/resources/${blog.id}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="inline-flex items-center gap-2 mb-3 text-sm font-bold text-slate-700 hover:text-blue-700 transition-colors w-max"
+                >
+                  Read full article <ArrowRight className="w-4 h-4" />
+                </Link>
 
-                {/* 1. The Image (Clean, separate from text) */}
-                <div className="relative h-72 w-full overflow-hidden rounded-2xl mb-6 bg-slate-100">
+                {/* 2. The Image (Clean, separate from text) */}
+                <div className="relative h-64 md:h-72 w-full overflow-hidden rounded-2xl mb-5 bg-slate-100">
                   <Image 
-                    src={blog.image} 
+                    src={blog.imageUrl} 
                     alt={blog.title} 
                     fill  
                      sizes="(min-width: 768px) 50vw, 100vw"
@@ -161,24 +207,24 @@ export default function ResourcesPage() {
                   />
                 </div>
 
-                {/* 2. The Tags (Below image, pastel pills) */}
-                <div className="flex flex-wrap gap-3 mb-4">
+                {/* 3. The Tags (Below image, pastel pills) */}
+                <div className="flex flex-wrap gap-2 mb-4">
                   {blog.tags.map((tag, t) => (
                      <span 
                        key={t} 
-                       className={`px-3 py-1 text-[11px] font-bold rounded-full uppercase tracking-wider ${getTagColor(tag)}`}
+                       className={`px-3 py-1 text-[11px] font-bold rounded-full uppercase tracking-widest ${getTagColor(tag)}`}
                      >
                        {tag}
                      </span>
                   ))}
                 </div>
 
-                {/* 3. Title & Text (Editorial Serif) */}
-                <h3 className="text-3xl font-serif text-slate-900 mb-3 leading-tight group-hover:text-blue-700 transition-colors">
+                {/* 4. Title & Text (Editorial Serif) */}
+                <h3 className="text-2xl md:text-3xl font-serif text-blue-700 mb-3 leading-tight group-hover:text-blue-800 transition-colors">
                   {blog.title}
                 </h3>
-                <p className="text-slate-500 text-lg font-light leading-relaxed">
-                  {blog.desc}
+                <p className="text-slate-500 text-base font-light leading-relaxed">
+                  {blog.description}
                 </p>
               </motion.div>
             ))}
@@ -272,7 +318,7 @@ export default function ResourcesPage() {
 
                 {/* Main Image (Inline now, not background) */}
                 <div className="relative w-full h-80 md:h-[400px] rounded-xl overflow-hidden mb-12">
-                  <Image src={selectedBlog.image} alt={selectedBlog.title} fill sizes="(min-width: 768px) 768px, 100vw" className="object-cover" />
+                  <Image src={selectedBlog.imageUrl} alt={selectedBlog.title} fill sizes="(min-width: 768px) 768px, 100vw" className="object-cover" />
                 </div>
 
                 {/* Article Prose */}

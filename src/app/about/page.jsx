@@ -6,19 +6,19 @@ import { motion, useInView } from "framer-motion";
 import { Plus } from "lucide-react";
 import BookButton from "@/components/FormButton/BookButton";
 
-// 1. Team Data
+// 1. Team Data (Updated with all requested members)
 const teamMembers = [ 
   {
     id: 1,
-    name: "Sakar Jung Shahi",
-    role: "MANAGING DIRECTOR",
-    image: "/about/member3.png",
+    name: "Rakesh Kumar Vaidya",
+    role: "CHAIRMAN",
+    image: "/about/rk.png", // Update with actual path
   },
   {
     id: 2,
-    name: "Asghar Hussain",
-    role: "HEAD OF BUSINESS & OPERATIONS",
-    image: "/about/member1.jpg",
+    name: "Sakar Jung Shahi",
+    role: "MANAGING DIRECTOR",
+    image: "/about/member3.png",
   },
   {
     id: 3,
@@ -26,9 +26,49 @@ const teamMembers = [
     role: "OPERATIONS DIRECTOR",
     image: "/about/member2.png",
   },
+  {
+    id: 4,
+    name: "Er. Pravakar Thapa",
+    role: "DIRECTOR",
+    image: "/about/pk.png", // Update with actual path
+  },
+  {
+    id: 5,
+    name: "Asghar Hussain",
+    role: "HEAD OF BUSINESS & OPERATIONS",
+    image: "/about/member1.jpg",
+  },
+  {
+    id: 6,
+    name: "Rojan Rai",
+    role: "ACCOUNTS & HR",
+    image: "/about/rr.png", // Update with actual path
+  },
 ];
 
-// 2. Timeline Data
+// 2. Counselors Data
+const counselors = [
+  {
+    id: 1,
+    name: "Shlesha RajBhandari",
+    role: "COUNSELOR (UK & EUROPE)",
+    image: "/about/sr.png", // Update with actual path
+  },
+  {
+    id: 2,
+    name: "Pramila Shrestha",
+    role: "COUNSELOR (MULTI-DESTINATION)",
+    image: "/about/ps.png", // Update with actual path
+  },
+  {
+    id: 3,
+    name: "Sandesh Yonjan",
+    role: "COUNSELOR (MULTI-DESTINATION)",
+    image: "/about/sy.png", // Update with actual path
+  },
+];
+
+// 3. Timeline Data
 const timelineData = [
   {
     year: "2016",
@@ -92,11 +132,11 @@ export default function AboutPage() {
       </div>
 
       {/* -------------------------------------------------------
-          2. INTRO SECTION - REMOVED STICKY
+          2. INTRO SECTION 
       ------------------------------------------------------- */}
       <section className="py-24 px-4 sm:px-6 lg:px-12 max-w-7xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-32 items-start">
-          <div className="flex flex-col gap-8"> {/* Removed sticky top-24 */}
+          <div className="flex flex-col gap-8">
             <div className="inline-flex items-center gap-2 bg-[#FF7700] px-4 py-2.5 self-start">
               <Plus className="w-3 h-3 text-black" />
               <span className="text-xs font-bold uppercase tracking-widest text-black">
@@ -120,61 +160,12 @@ export default function AboutPage() {
       </section>
 
       {/* -------------------------------------------------------
-          3. JOURNEY / PROCESS SECTION
-      ------------------------------------------------------- */}
-      <section className="py-24 w-full bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
-          
-          <div className="mb-20 max-w-2xl">
-            <h3 className="text-3xl sm:text-4xl md:text-5xl font-medium text-slate-900 font-serif mb-4">
-              Our Journey
-            </h3>
-            <p className="text-slate-500 text-lg font-light">
-              A history of strategic growth and student success.
-            </p>
-          </div>
-
-          <div className="relative">
-            {/* The Central Line (Desktop) */}
-            <div className="absolute left-[20px] lg:left-1/2 top-0 bottom-0 w-px bg-slate-200 hidden lg:block" />
-
-            <div className="flex flex-col gap-24 lg:gap-32">
-              {timelineData.map((item, index) => (
-                <JourneyStep key={index} item={item} index={index} />
-              ))}
-            </div>
-
-            {/* JOURNEY CONTINUES SECTION */}
-            <div className="relative z-10 pt-24 lg:pt-32 flex justify-center">
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8 }}
-                className="bg-white px-6 sm:px-8 py-6 flex flex-col items-center text-center"
-              >
-                {/* Decorative Dot */}
-                <div className="w-2 h-2 bg-slate-200 rounded-full mb-6 hidden lg:block" />
-                
-                <h4 className="text-2xl sm:text-3xl md:text-5xl font-serif text-slate-300 italic tracking-tight">
-                  The Journey Continues...
-                </h4>
-                
-                <p className="mt-3 text-xs font-bold uppercase tracking-[0.2em] text-slate-400/70">
-                  Building the Future
-                </p>
-              </motion.div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* -------------------------------------------------------
-          4. LEADERSHIP TEAM
+          3. TEAM SECTION (Leaders & Counselors)
       ------------------------------------------------------- */}
       <div className="py-12 px-4 sm:px-6 bg-[#F6F5F2]">
         <section className="py-12 md:py-20 max-w-7xl mx-auto">
             
+          {/* Leaders */}
           <div className="text-center mb-12 md:mb-16">
             <span className="text-xs font-bold uppercase tracking-widest text-[#0c39b1] mb-2 block">
               Expertise
@@ -184,7 +175,7 @@ export default function AboutPage() {
             </h3>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-24">
             {teamMembers.map((member, index) => (
               <motion.div 
                 key={member.id}
@@ -220,7 +211,107 @@ export default function AboutPage() {
               </motion.div>
             ))}
           </div>
+
+          {/* Counselors */}
+          <div className="text-center mb-12 md:mb-16">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#0c39b1] mb-2 block">
+              Guidance
+            </span>
+            <h3 className="text-3xl md:text-5xl font-medium text-slate-900 font-serif">
+              Our Counselors
+            </h3>
+          </div>
+
+          {/* Centered grid for 3 items on large screens */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 max-w-5xl mx-auto gap-4 sm:gap-6 lg:gap-8">
+            {counselors.map((member, index) => (
+              <motion.div 
+                key={member.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="group relative flex flex-col items-center lg:block lg:aspect-[4/5] lg:rounded-2xl lg:overflow-hidden lg:bg-slate-300 cursor-pointer"
+              >
+                {/* Image Container */}
+                <div className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden shadow-lg 
+                              lg:shadow-none lg:absolute lg:inset-0 lg:w-full lg:h-full lg:rounded-none">
+                  <Image
+                    src={member.image}
+                    alt={member.name}
+                    fill
+                    className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
+                  />
+                  <div className="hidden lg:block absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-80 transition-opacity duration-300" />
+                </div>
+
+                {/* Text Content */}
+                <div className="mt-4 text-center 
+                              lg:mt-0 lg:absolute lg:bottom-0 lg:left-0 lg:w-full lg:p-6 lg:text-left 
+                              lg:transform lg:translate-y-2 lg:group-hover:translate-y-0 lg:transition-transform lg:duration-300">
+                  <h4 className="text-lg md:text-xl font-bold text-slate-900 lg:text-white mb-1">
+                    {member.name}
+                  </h4>
+                  <p className="text-xs md:text-sm font-medium text-[#FF7700] lg:text-white/70 uppercase tracking-wide">
+                    {member.role}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </section> 
+
+        {/* -------------------------------------------------------
+            4. JOURNEY / PROCESS SECTION
+        ------------------------------------------------------- */}
+        {/* Note: I moved this inside the main component flow rather than having it dangling at the bottom of the file */}
+        <section className="py-24 w-full bg-[#F6F5F2] overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-12">
+            
+                    {/* Counselors */}
+                    <div className="text-center mb-12 md:mb-16">
+            <span className="text-xs font-bold uppercase tracking-widest text-[#0c39b1] mb-2 block">
+            A history of strategic growth and student's success
+            </span>
+            <h3 className="text-3xl md:text-5xl font-medium text-slate-900 font-serif">
+            Our Journey
+            </h3>
+          </div>
+
+            <div className="relative">
+              {/* The Central Line (Desktop) */}
+              <div className="absolute left-[20px] lg:left-1/2 top-0 bottom-0 w-px bg-slate-300 hidden lg:block" />
+
+              <div className="flex flex-col gap-24 lg:gap-32">
+                {timelineData.map((item, index) => (
+                  <JourneyStep key={index} item={item} index={index} />
+                ))}
+              </div>
+
+              {/* JOURNEY CONTINUES SECTION */}
+              <div className="relative z-10 pt-24 lg:pt-32 flex justify-center">
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8 }}
+                  className="bg-[#F6F5F2] px-6 sm:px-8 py-6 flex flex-col items-center text-center"
+                >
+                  {/* Decorative Dot */}
+                  <div className="w-2 h-2 bg-slate-300 rounded-full mb-6 hidden lg:block" />
+                  
+                  <h4 className="text-2xl sm:text-3xl md:text-5xl font-serif text-slate-400 italic tracking-tight">
+                    The Journey Continues...
+                  </h4>
+                  
+                  <p className="mt-3 text-xs font-bold uppercase tracking-[0.2em] text-slate-500/70">
+                    Building the Future
+                  </p>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+        </section>
         
         {/* -------------------------------------------------------
             5. CTA
@@ -275,7 +366,7 @@ function JourneyStep({ item, index }) {
 
       {/* CENTRAL DOT (Desktop Only) */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden lg:flex items-center justify-center">
-        <div className="w-4 h-4 bg-[#10b981] rounded-full border-[3px] border-white shadow-sm z-10" />
+        <div className="w-4 h-4 bg-[#10b981] rounded-full border-[3px] border-[#F6F5F2] shadow-sm z-10" />
       </div>
 
       {/* 2. TEXT SIDE */}
@@ -290,7 +381,7 @@ function JourneyStep({ item, index }) {
           <p className="text-base sm:text-lg text-slate-600 leading-relaxed mb-6">
             {item.description}
           </p>
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-100 rounded-full">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full">
             <span className="text-sm font-bold text-slate-900">{item.year}</span>
           </div>
         </div>

@@ -79,24 +79,30 @@ import EventsGridClient from "./EventsgridClient";
 export const revalidate = 1800;
 
 export default async function EventsGridServer() {
-  const events = await prisma.event.findMany({
-    where: { isPublished: true },
-    orderBy: { date: "asc" },
-    select: {
-      id: true,
-      title: true,
-      slug: true,
-      category: true,
-      date: true,
-      time: true,
-      location: true,
-      description: true,
-      longDescription: true,
-      imageUrl: true,
-      isPublished: true,
-    },
-  });
+  let events = [];
+  
+  try {
+    events = await prisma.event.findMany({
+      where: { isPublished: true },
+      orderBy: { date: "asc" },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        category: true,
+        date: true,
+        time: true,
+        location: true,
+        description: true,
+        longDescription: true,
+        imageUrl: true,
+        isPublished: true,
+      },
+    });
+    console.log("[EventsGridServer] prisma events =", events.length);
+  } catch (error) {
+    console.warn("[EventsGridServer] Failed to fetch events (likely DB cold start):", error.message);
+  }
 
-  console.log("[EventsGridServer] prisma events =", events.length);
   return <EventsGridClient initialEvents={events} />;
 }

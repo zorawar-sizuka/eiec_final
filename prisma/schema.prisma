@@ -205,3 +205,32 @@ model User {
   @@map("users")
 }
 
+// --------------------
+// STUDY MATERIALS & BLOGS
+// --------------------
+
+model StudyMaterial {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  iconName    String   
+  themeName   String   
+  fileUrl     String   
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Blog {
+  id          Int      @id @default(autoincrement())
+  title       String
+  slug        String   @unique
+  description String
+  imageUrl    String   
+  tags        String[]
+  content     String   @db.Text
+  isPublished Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
