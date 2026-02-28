@@ -72,13 +72,13 @@ export default function EventsSection() {
       const formData = new FormData();
       formData.append("file", file);
 
-      const res = await fetch("/api/upload", {
+      const res = await fetch("/api/admin/upload", {
         method: "POST",
         body: formData,
       });
 
       const json = await res.json();
-      if (!res.ok || !json?.ok) throw new Error(json?.error || "Upload failed");
+      if (!res.ok) throw new Error(json?.error || "Upload failed");
 
       // Replace preview with permanent URL
       setStateFn((prev) => ({ ...prev, imageUrl: json.url }));

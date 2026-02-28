@@ -185,47 +185,67 @@ export default function ResourcesPage() {
                 key={blog.id}
                 layoutId={`blog-card-${blog.id}`}
                 onClick={() => setSelectedBlog(blog)}
-                className="group cursor-pointer flex flex-col w-full"
+                className="group cursor-pointer flex flex-col w-full bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden"
+                whileHover={{ y: -8 }}
               > 
-                {/* 1. Top Link (Stops propagation to not open modal) */}
-                <Link
-                  href={`/resources/${blog.id}`}
-                  onClick={(e) => e.stopPropagation()}
-                  className="inline-flex items-center gap-2 mb-3 text-sm font-bold text-slate-700 hover:text-blue-700 transition-colors w-max"
-                >
-                  Read full article <ArrowRight className="w-4 h-4" />
-                </Link>
-
-                {/* 2. The Image (Clean, separate from text) */}
-                <div className="relative h-64 md:h-72 w-full overflow-hidden rounded-2xl mb-5 bg-slate-100">
+                {/* 1. Header Image & Meta (Editorial style with inner tags) */}
+                <div className="relative h-64 md:h-[340px] w-full overflow-hidden bg-slate-100">
                   <Image 
                     src={blog.imageUrl} 
                     alt={blog.title} 
                     fill  
-                     sizes="(min-width: 768px) 50vw, 100vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105" 
+                    sizes="(min-width: 768px) 50vw, 100vw"
+                    className="object-cover transition-transform duration-1000 group-hover:scale-110" 
                   />
+                  {/* Deep vignette gradient for premium feel and text legibility */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0f172a]/80 via-transparent to-transparent opacity-60 transition-opacity duration-500 group-hover:opacity-90" />
+                  
+                  {/* Floating Tags (Glassmorphism look) */}
+                  <div className="absolute top-6 left-6 right-6 flex flex-wrap gap-2 z-10">
+                    {blog.tags.map((tag, t) => (
+                      <span 
+                        key={t} 
+                        className="px-4 py-2 text-[10px] font-extrabold rounded-full uppercase tracking-[0.2em] backdrop-blur-md bg-white/95 shadow-sm text-slate-800 transition-colors group-hover:bg-blue-600 group-hover:text-white"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Read Time / Category Badge */}
+                  <div className="absolute bottom-6 left-6 flex items-center gap-2 text-white/95 text-sm font-medium z-10 shadow-sm">
+                    <Calendar className="w-4 h-4" />
+                    <span className="tracking-wide">Insight &bull; 5 min read</span>
+                  </div>
                 </div>
 
-                {/* 3. The Tags (Below image, pastel pills) */}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {blog.tags.map((tag, t) => (
-                     <span 
-                       key={t} 
-                       className={`px-3 py-1 text-[11px] font-bold rounded-full uppercase tracking-widest ${getTagColor(tag)}`}
-                     >
-                       {tag}
-                     </span>
-                  ))}
-                </div>
+                {/* 2. Content Body */}
+                <div className="flex flex-col flex-1 p-8 md:p-10">
+                  <h3 className="text-2xl md:text-[2rem] font-serif text-slate-900 mb-5 leading-[1.15] group-hover:text-blue-700 transition-colors line-clamp-2">
+                    {blog.title}
+                  </h3>
+                  <p className="text-slate-500 text-[1.05rem] font-light leading-relaxed mb-8 line-clamp-3">
+                    {blog.description}
+                  </p>
 
-                {/* 4. Title & Text (Editorial Serif) */}
-                <h3 className="text-2xl md:text-3xl font-serif text-blue-700 mb-3 leading-tight group-hover:text-blue-800 transition-colors">
-                  {blog.title}
-                </h3>
-                <p className="text-slate-500 text-base font-light leading-relaxed">
-                  {blog.description}
-                </p>
+                  {/* 3. Action Footer */}
+                  <div className="mt-auto pt-8 border-t border-slate-100 flex items-center justify-between">
+                    <div className="inline-flex items-center gap-4 text-sm font-bold text-slate-900 group-hover:text-blue-700 transition-colors">
+                      <span className="uppercase tracking-[0.15em] text-[11px]">Read Article</span>
+                      <div className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-blue-700 group-hover:bg-blue-50 transition-all duration-300">
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                      </div>
+                    </div>
+                    {/* Dedicated Page Link for SEO / Open in New Tab */}
+                    <Link
+                      href={`/resources/${blog.id}`}
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-[10px] font-bold text-slate-400 hover:text-slate-600 uppercase tracking-widest border-b border-transparent hover:border-slate-400 transition-colors"
+                    >
+                      Open dedicated page
+                    </Link>
+                  </div>
+                </div>
               </motion.div>
             ))}
           </div>

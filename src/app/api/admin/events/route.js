@@ -17,16 +17,16 @@
 //   try {
 //     const { searchParams } = new URL(req.url);
 //     const monthName = searchParams.get('month'); // e.g., "January"
-    
+
 //     // --- 1. BUILD DATE FILTER (Optional Server-Side Optimization) ---
 //     // If a month is provided, we only fetch events for that specific window.
 //     // This makes specific month views instant even if you have 1000s of events.
 //     let dateFilter = {};
-    
+
 //     if (monthName && monthName !== "All Months") {
 //       const currentYear = new Date().getFullYear();
 //       const monthIndex = new Date(`${monthName} 1, ${currentYear}`).getMonth();
-      
+
 //       // Start of month
 //       const startDate = new Date(currentYear, monthIndex, 1);
 //       // End of month
@@ -76,7 +76,7 @@
 // }
 //   try {
 //     const body = await req.json();
-    
+
 //     // Basic validation
 //     if (!body.title || !body.date) {
 //       return NextResponse.json({ error: "Title and Date are required" }, { status: 400 });
@@ -94,7 +94,7 @@
 //         imageUrl: body.imageUrl,
 //       },
 //     });
-    
+
 //     return NextResponse.json(newEvent, { status: 201 });
 //   } catch (error) {
 //     console.error("POST Event Error:", error);
@@ -119,7 +119,7 @@
 //     await prisma.event.delete({ 
 //         where: { id: Number(id) } 
 //     });
-    
+
 //     return NextResponse.json({ success: true });
 //   } catch (error) {
 //     console.error("DELETE Event Error:", error);
@@ -310,12 +310,12 @@
 //     if (typeof updateData.isPublished !== "undefined") {
 //       updateData.isPublished = Boolean(updateData.isPublished);
 //     }
-    
+
 
 //     const updatedEvent = await prisma.event.update({
 //       where: { id: Number(id) },
 //       data: updateData, 
-      
+
 //     });
 
 //     return NextResponse.json(updatedEvent, { status: 200 });
@@ -802,7 +802,6 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { revalidatePath } from "next/cache";
-import { put } from "@vercel/blob"; // Vercel Blob
 
 export const dynamic = "force-dynamic";
 
@@ -911,39 +910,12 @@ export async function GET(req) {
   }
 }
 
-// ── POST ── Create new event (supports image upload via multipart/form-data)
 export async function POST(req) {
   const guard = await requireAdmin();
   if (!guard.ok) return guard.res;
 
   try {
-    const contentType = req.headers.get("content-type") || "";
-    let body;
-
-    // Support both JSON and multipart/form-data (for file upload)
-    if (contentType.includes("multipart/form-data")) {
-      const formData = await req.formData();
-      body = Object.fromEntries(formData.entries());
-
-      // Handle file upload if present
-      const file = formData.get("image");
-      if (file && file.size > 0) {
-        if (!file.type?.startsWith("image/")) {
-          return jsonError("Only image files allowed", 400);
-        }
-
-        const ext = file.name.split(".").pop() || "jpg";
-        const filename = `${crypto.randomUUID()}.${ext}`;
-
-        const blob = await put(filename, file, {
-          access: "public",
-        });
-
-        body.imageUrl = blob.url; // Permanent Vercel Blob URL
-      }
-    } else {
-      body = await req.json();
-    }
+    const body = await req.json();
 
     const title = safeString(body.title, 140);
     if (!title || !body.date) {
@@ -1004,36 +976,17 @@ export async function DELETE(req) {
   }
 }
 
-// ── PUT ── Update event (supports JSON or multipart for image)
+// ── PUT ── Update event
 export async function PUT(req) {
   const guard = await requireAdmin();
   if (!guard.ok) return guard.res;
 
   try {
-    const contentType = req.headers.get("content-type") || "";
     let body;
-
-    if (contentType.includes("multipart/form-data")) {
-      const formData = await req.formData();
-      body = Object.fromEntries(formData.entries());
-
-      const file = formData.get("image");
-      if (file && file.size > 0) {
-        if (!file.type?.startsWith("image/")) {
-          return jsonError("Only image files allowed", 400);
-        }
-
-        const ext = file.name.split(".").pop() || "jpg";
-        const filename = `${crypto.randomUUID()}.${ext}`;
-
-        const blob = await put(filename, file, {
-          access: "public",
-        });
-
-        body.imageUrl = blob.url;
-      }
-    } else {
+    try {
       body = await req.json();
+    } catch (e) {
+      return jsonError("Invalid JSON body", 400);
     }
 
     const id = parseId(body.id);
