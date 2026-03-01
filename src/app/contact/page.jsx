@@ -73,7 +73,8 @@ export default function ContactPage() {
                       <span className="block text-xs font-bold uppercase tracking-widest text-slate-400 mb-1.5">
                         Address
                       </span>
-                      <p className="text-slate-900 leading-relaxed">
+                      <p className="text-slate-900 leading-relaxed"> 
+                        Hattisar Road,<br />
                         Putalisadak,<br />
                         Near Star Mall<br />
                         Kathmandu, 44600
